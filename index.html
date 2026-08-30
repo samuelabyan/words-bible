@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+<title>WordsForge - Bible Edition</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app">
+
+  <div class="topbar">
+    <button class="icon-btn" id="btnMap" title="Level map" aria-label="Level map">&#9638;</button>
+    <div class="level-meta">
+      <div class="level-label" id="levelLabelText">Level</div>
+      <div class="level-num" id="levelNum">1</div>
+      <div id="hardPillWrap"></div>
+    </div>
+    <button class="icon-btn" id="btnSettings" title="Settings" aria-label="Settings">&#9881;</button>
+  </div>
+
+  <div class="progress-wrap">
+    <div class="progress-row">
+      <span id="progressText">0 / 0 words</span>
+      <span id="scoreText">0 pts</span>
+    </div>
+    <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+  </div>
+
+  <div class="rank-tag" id="rankTag"></div>
+
+  <div class="input-zone">
+    <div class="toast" id="toast"></div>
+    <div class="word-buffer" id="wordBuffer"><span class="caret"></span></div>
+  </div>
+
+  <div class="ring-wrap" id="ringWrap">
+    <div class="glow-behind"></div>
+    <div id="tiles"></div>
+  </div>
+
+  <div class="controls">
+    <button class="ctrl-btn" id="btnDelete" aria-label="Delete letter">&#9003; Delete</button>
+    <button class="ctrl-btn" id="btnShuffle" aria-label="Shuffle letters">&#8635; Shuffle</button>
+    <button class="ctrl-btn primary" id="btnEnter" aria-label="Submit word">Enter</button>
+  </div>
+  <div class="controls" style="padding-top:0;">
+    <button class="ctrl-btn hint" id="btnHint">&#9733; Hint (&minus;5 pts)</button>
+    <button class="ctrl-btn reveal" id="btnReveal">&#128065; Reveal all</button>
+  </div>
+
+  <div class="drawer-handle" id="drawerHandle">
+    <span class="t" id="drawerLabel">Found words (0)</span>
+    <span class="chev">&#9660;</span>
+  </div>
+  <div class="drawer" id="drawer">
+    <div class="found-list" id="foundList"></div>
+  </div>
+
+  <div class="footer-space"></div>
+</div>
+
+<!-- Level complete modal -->
+<div class="overlay" id="overlayComplete">
+  <div class="sheet">
+    <div class="sheet-head">
+      <span class="sheet-title" id="completeTitleText">Level complete</span>
+      <button class="close-x" id="closeComplete">&times;</button>
+    </div>
+    <div class="complete-hero">
+      <div class="big">&#127942;</div>
+      <h2 id="completeLevelTitle">Level 1 cleared</h2>
+      <p id="completeSub">You found every word on the board.</p>
+    </div>
+    <div class="stat-grid">
+      <div class="stat-box"><div class="v" id="completeScore">0</div><div class="k" id="statLevelScoreLabel">Level score</div></div>
+      <div class="stat-box"><div class="v" id="completeWords">0</div><div class="k" id="statWordsLabel">Words found</div></div>
+      <div class="stat-box"><div class="v" id="completeLongest">&mdash;</div><div class="k" id="statLongestLabel2">Longest word</div></div>
+      <div class="stat-box"><div class="v" id="completeRank">&mdash;</div><div class="k" id="statRankLabel">Rank</div></div>
+    </div>
+    <button class="btn-block primary" id="btnNextLevel">Next level</button>
+    <button class="btn-block" id="btnStayLevel">Keep reviewing</button>
+  </div>
+</div>
+
+<!-- Level map modal -->
+<div class="overlay" id="overlayMap">
+  <div class="sheet">
+    <div class="sheet-head">
+      <span class="sheet-title" id="mapTitleText">Level map</span>
+      <button class="close-x" id="closeMap">&times;</button>
+    </div>
+    <p class="hint-text" id="mapHintText">Gold dot marks a mandatory-letter level. Tap any unlocked level to jump there.</p>
+    <div class="map-grid" id="mapGrid"></div>
+  </div>
+</div>
+
+<!-- Settings modal -->
+<div class="overlay" id="overlaySettings">
+  <div class="sheet">
+    <div class="sheet-head">
+      <span class="sheet-title" id="settingsTitleText">Settings</span>
+      <button class="close-x" id="closeSettings">&times;</button>
+    </div>
+    <div class="tabs">
+      <div class="tab active" data-tab="general" id="tabGeneral">General</div>
+      <div class="tab" data-tab="levels" id="tabLevels">Levels</div>
+      <div class="tab" data-tab="data" id="tabData">Data</div>
+    </div>
+
+    <div class="tab-panel" id="panelGeneral">
+      <div class="field-label" id="languageLabelText">Language</div>
+      <div class="seg-wrap" id="langSegWrap"></div>
+
+      <div class="field-label" id="themeLabelText">Theme</div>
+      <div class="seg-wrap" id="themeSegWrap"></div>
+    </div>
+
+    <div class="tab-panel" id="panelLevels" style="display:none;">
+      <div class="level-list" id="levelList"></div>
+    </div>
+
+    <div class="tab-panel" id="panelData" style="display:none;">
+      <div class="field-label" id="dataProgressLabelText">Your progress</div>
+      <div class="stat-grid" style="margin-top:6px;">
+        <div class="stat-box"><div class="v" id="statTotalScore">0</div><div class="k" id="statTotalScoreLabel">Total score</div></div>
+        <div class="stat-box"><div class="v" id="statLevelsDone">0</div><div class="k" id="statLevelsDoneLabel">Levels done</div></div>
+        <div class="stat-box"><div class="v" id="statWordsFound">0</div><div class="k" id="statWordsFoundLabel">Words found</div></div>
+        <div class="stat-box"><div class="v" id="statLongest">&mdash;</div><div class="k" id="statLongestLabel">Longest word</div></div>
+      </div>
+      <button class="btn-block" id="btnExportProgress">&#8681; Export progress</button>
+      <button class="btn-block" id="btnImportProgressBtn">&#8679; Import progress</button>
+      <input type="file" id="importProgressFile" accept="application/json" style="display:none;">
+      <div id="dataFeedback"></div>
+      <button class="btn-block danger" id="btnResetProgress">Reset all progress</button>
+    </div>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
